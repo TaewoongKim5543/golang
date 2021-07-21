@@ -37,7 +37,7 @@ func (s *Set) MakingSetMenu(setmenu MakeSetMenu) {
 }
 
 func (s *Set) String() string {
-	return "[ Original buger " + s.me + " ]"
+	return "[ Big buger " + s.me + " ]"
 }
 
 ////////////////////////////////////

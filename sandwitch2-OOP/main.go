@@ -13,7 +13,7 @@ type SpoonOfStrawberryJam struct {
 }
 
 func (s *SpoonOfStrawberryJam) String() string { // SpoonOfStrawberryJam의 1개 매소드 string
-	return "+ strawberry"
+	return "+ strawberryjam"
 }
 
 func (j *StrawberryJam) GetOneSpoon() *SpoonOfStrawberryJam { // SpoonOfStrawberryJam의 1개 매소드 GetOneSpoon
@@ -26,7 +26,7 @@ func (b *Bread) PutJam(jam *StrawberryJam) { //Bread 매서드1 PutJam
 }
 
 func (b *Bread) String() string { //Bread 메서드2 String
-	return "bread " + b.val
+	return "bread " + b.val + " + bread"
 }
 
 func main() {
