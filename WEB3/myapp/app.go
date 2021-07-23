@@ -30,18 +30,32 @@ func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) { //Serve
 	}
 	user.CreatedAt = time.Now()
 
-	data, _ := json.Marshal(user) //인터페이스, JSON형식 결과값은 바이트 어레이
+	// user에 담겨있는 json 데이터들을 json.Marshal로 병합(Marshal: 한국어로 번역하면 '합치다' 정도)
+	// json.Marshal : 매개변수 - 인터페이스, 리턴값 - 바이트 배열
+	data, _ := json.Marshal(user)
+
+	// w.Header().Add : 리스폰스 헤더 내용 작성
 	w.Header().Add("content-type", "application/json")
+
 	w.WriteHeader(http.StatusOK)
+
+	// json.Marshal 리턴값으로 저장된 변수 data를 스트링화 하고, http.ResponseWriter로 작성.
 	fmt.Fprint(w, string(data))
 }
 
 func barHandler(w http.ResponseWriter, r *http.Request) {
+
 	name := r.URL.Query().Get("name")
 	if name == "" {
 		name = "World"
 	}
-	fmt.Fprintf(w, "Hello %s", name) // 본문, 바디에
+
+	// Fprintf - 바디(본문) 내용 렌더링
+	// 입력되는 값이 없는 경우 디폴트로 Hellow World! 출력
+	fmt.Fprintf(w, "Hello %s!", name)
+
+	// 응용 케이스 : fmt.Fprintf 로 본문 내용 변경 후 app_test.go에서 바꾼 내용으로 문자열 비교 테스트해보기.
+	// fmt.Fprintf(w, "나를 똑같이 맞춰줘!")
 }
 
 func NewHttpHandler() http.Handler {
