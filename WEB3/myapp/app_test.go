@@ -1,7 +1,6 @@
 package myapp
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,39 +9,63 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//--index Handler res.body로 render된 data를 비교검증부분--//
 func TestIndexPathHandler(t *testing.T) {
 	assert := assert.New(t)
 
 	res := httptest.NewRecorder() //실제 response를 사용하지 않고 테스팅 응신방법
 	req := httptest.NewRequest("GET", "/", nil)
-
-	// indexHandler(res, req)
-	mux := NewHttpHandler()
-	mux.ServeHTTP(res, req)
-
-	fmt.Println("왜안되노..")
-	assert.Equal(http.StatusOK, res.Code) // 잘 돌아가는지 아닌지 검사 .
-
-	data, _ := ioutil.ReadAll(res.Body)
-	assert.Equal("Hello World", string(data))
-}
-
-func TestBarPathHandler_WithoutName(t *testing.T) {
-	assert := assert.New(t)
-
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/bar?name=TaeWoong", nil)
-
-	// barHandler(res, req)
+	//mux로 "/"경로를 타켓 라우팅(분배) 응신 렌더링 시키는 부분
 	mux := NewHttpHandler()
 	mux.ServeHTTP(res, req)
 
 	assert.Equal(http.StatusOK, res.Code)
-
-	// data, _ := ioutil.ReadAll(res.Body) : 본문 내용 가지고 와서 data 변수에 저장
-	// ioutil.ReadAll - 리턴값 2개 : []byte 와 error 값
-	// res.Body : response body 변수 네이밍
+	//app.go페이지에서 index Handler에서 render data를 읽어오는 부분----//
 	data, _ := ioutil.ReadAll(res.Body)
-	// data에 저장된 바이트 배열을 스트링으로 바꾸고, 기준이 되는 문자열 "Hello World!"와 비교
-	assert.Equal("Hello TaeWoong!", string(data))
+	assert.Equal("Hello World", string(data))
+}
+
+//-------------2단계 테스팅--------------------//
+func TestBarPathHandler_WithoutName(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder() //실제 response를 사용하지 않고 테스팅 응신방법
+	req := httptest.NewRequest("GET", "/bar", nil)
+	//mux로 "/"경로를 타켓 라우팅(분배) 응신 렌더링 시키는 부분
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	//app.go페이지에서 index Handler에서 render data를 읽어오는 부분----//
+	data, _ := ioutil.ReadAll(res.Body)
+	assert.Equal("Hello World!", string(data))
+}
+
+//----------3단계 테스팅------------------------//
+func TestBarPathHandler_WitName(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder() //실제 response를 사용하지 않고 테스팅 응신방법
+	req := httptest.NewRequest("GET", "/bar?name=junyoung", nil)
+	//mux로 "/"경로를 타켓 라우팅(분배) 응신 렌더링 시키는 부분
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	//app.go페이지에서 index Handler에서 render data를 읽어오는 부분----//
+	data, _ := ioutil.ReadAll(res.Body)
+	assert.Equal("Hello junyoung!", string(data))
+}
+
+//------4단계 테스팅---------------------------//
+func TestFooHandler_WithoutJson(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder() //실제 response를 사용하지 않고 테스팅 응신방법
+	req := httptest.NewRequest("GET", "/foo", nil)
+	//mux로 "/"경로를 타켓 라우팅(분배) 응신 렌더링 시키는 부분
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusBadRequest, res.Code) //성공
 }
