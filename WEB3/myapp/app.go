@@ -31,7 +31,7 @@ func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) { //Serve
 	user.CreatedAt = time.Now()
 
 	data, _ := json.Marshal(user) //인터페이스, JSON형식 결과값은 바이트 어레이
-	//w.Header().Add("content-type", "application/json")
+	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, string(data))
 }
@@ -41,7 +41,7 @@ func barHandler(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "World"
 	}
-	fmt.Fprintf(w, "Hello %s!", name)
+	fmt.Fprintf(w, "Hello %s", name) // 본문, 바디에
 }
 
 func NewHttpHandler() http.Handler {
